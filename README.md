@@ -34,3 +34,21 @@ Se você quiser baixar e rodar este projeto na sua máquina, siga os passos abai
 1. **Clone o repositório:**
    ```bash
    git clone [https://github.com/MyBad64xapi-controle-encomendas.git](https://github.com/MyBad64x/api-controle-encomendas.git)
+
+2. **Entre na pasta do projeto:**
+
+   ```bash
+   cd api-controle-encomendas
+
+3. **Instale as dependências obrigatórias:**
+
+   ```bash
+   npm install
+
+4. **inicie o servidor:**
+
+   ```bash
+   node server.js
+
+5. **Acesse o navegador**
+   Abra http://localhost:3000/encomendas para visualizar a lista inicial de pedidos em formato JSON. Para testar os métodos POST, PUT e DELETE, utilize a extensão Thunder Client no VS Code ou o Postman.
