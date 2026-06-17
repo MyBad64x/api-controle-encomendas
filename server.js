@@ -1,6 +1,15 @@
 const express = require('express');
 const app = express();
+const { z } = require('zod');
 const PORT = 3000;
+
+//validação para encomenda usando zod
+const encomendaschema = z.object({
+    cliente: z.string().min(3, { message: "O nome do cliente deve ter pelo menos 3 caracteres"}),
+    doce: z.string().min(1, { message: "o nome do doce é obrigatório"}),
+    quantidade: z.number().int().positive({ message: "a quantidade deve ser um numero maior que zero"}),
+    valor: z.number().positive({ message: "o valor deve ser um numero maior que zero"})
+});
 
 //gerar o código de rastreio automático
 function gerarcodigorastreio() {
@@ -29,12 +38,18 @@ app.get('/encomendas', (req, res) => {
 
 //criar uma nova encomenda
 app.post('/encomendas', (req, res) => {
-    const { cliente, doce, quantidade, valor} = req.body;
+    
+    //safeparse valida a requisição sem derrubar o servidor inteiro case resulte em erro
+    const validacao = encomendaschema.safeParse(req.body);
 
-    //confirmação para o cliente enviar os dados
-    if (!cliente || !doce || !quantidade || !valor) {
-        return res.status(400).json({ erro: "Por favor, preencha todos os campos do pedido"})
+    if (!validacao.success) {
+        return res.status(400).json({
+            erro: "Dados de envio inválidos",
+            detalhes: validacao.error.flatten().fieldErrors
+        });
     }
+
+    const { cliente, doce, quantidade, valor } = validacao.data;
 
     const novaencomenda = {
         id: encomendas.length + 1,
