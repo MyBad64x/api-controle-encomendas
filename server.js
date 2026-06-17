@@ -2,6 +2,15 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 
+//gerar o código de rastreio automático
+function gerarcodigorastreio() {
+    const alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const letra1 = alfabeto[Math.floor(Math.random() * alfabeto.length)];
+    const letra2 = alfabeto[Math.floor(Math.random() * alfabeto.length)];
+    const numeros = Math.floor(100000000 + Math.random() * 900000000);
+    return `${letra1}${letra2}${numeros}BR`;
+}
+
 app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Bem-vindo a API de controle de encomendas!');
@@ -9,8 +18,8 @@ app.get('/', (req, res) => {
 
 //Banco de dados
 let encomendas = [
-    {id: 1, cliente: "Fulana de tal", doce: "Bolo de Aniversáio", quantidade: 1, valor: 150.00, status: "Pendente" },
-    {id: 2, cliente: "Fulano de tal", doce: "Brigadeiros Gourmet", quantidade: 50, valor: 100.00, status: "Pronto" }
+    {id: 1, cliente: "Fulana de tal", doce: "Bolo de Aniversário", quantidade: 1, valor: 150.00, status: "Pendente", codigorastreio: "PA123456789BR" },
+    {id: 2, cliente: "Fulano de tal", doce: "Brigadeiros Gourmet", quantidade: 50, valor: 100.00, status: "Pronto", codigorastreio: "RE987654321BR" }
 ];
 
 //rota para listar encomendas
@@ -33,7 +42,8 @@ app.post('/encomendas', (req, res) => {
         doce,
         quantidade,
         valor,
-        status: "Pendente"
+        status: "Pendente",
+        codigorastreio: gerarcodigorastreio()
     };
     encomendas.push(novaencomenda);
     res.status(201).json(novaencomenda);
