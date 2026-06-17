@@ -11,6 +11,13 @@ const encomendaschema = z.object({
     valor: z.number().positive({ message: "o valor deve ser um numero maior que zero"})
 });
 
+//validacao do status da encomenda
+const atualizastatuseschema = z.object({
+    status: z.enum(["Pendente", "Pronto", "Enviado"], {
+        errorMap: () => ({ message: "O status deve ser exatamente: 'Pendente', 'Pronto' ou 'Enviado' "})
+    })
+})
+
 //gerar o código de rastreio automático
 function gerarcodigorastreio() {
     const alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -79,9 +86,16 @@ app.put('/encomendas/:id', (req, res) => {
         return res.status(404).json({ erro : `Encomenda com o ID ${id} não encontrada.`});
     }
 
-    if (status) {
-        encomenda.status = status;
+    const validacao = atualizastatuseschema.safeParse(req.body);
+
+    if (!validacao.success) {
+        return res.status(400).json({
+            erro: "Status inválido",
+            detalhes: validacao.error.flatten().fieldErrors
+        });
     }
+
+    encomenda.status = validacao.data.status;
 
     res.json({ mensagem: "Status atualizado com sucesso!", encomenda });
 });
