@@ -52,3 +52,32 @@ Se você quiser baixar e rodar este projeto na sua máquina, siga os passos abai
 
 5. **Acesse o navegador**
    Abra http://localhost:3000/encomendas para visualizar a lista inicial de pedidos em formato JSON. Para testar os métodos POST, PUT e DELETE, utilize a extensão Thunder Client no VS Code ou o Postman.
+
+## Tecnologias e Ferramentas Adicionadas
+
+*   **[Zod](https://github.com/colinhacks/zod):** Validação de esquemas e dados de entrada rigorosa para garantir a integridade da API.
+*   **[Jest](https://jestjs.io/):** Framework de testes em JavaScript focado na simplicidade.
+*   **[Supertest](https://github.com/ladjs/supertest):** Utilizado para testar os endpoints HTTP de forma automatizada.
+
+## Como Executar os Testes
+
+Para garantir que a API está funcionando corretamente, você pode rodar a suíte de testes automatizados.
+
+Certifique-se de ter instalado as dependências de desenvolvimento e execute:
+
+```bash
+# Executa os testes via Jest
+npm test
+
+
+```markdown
+## Regras de Validação de Dados (Zod)
+
+Ao criar uma nova encomenda (`POST /encomendas`), o sistema valida os seguintes campos:
+
+*   **cliente:** Obrigatório (String).
+*   **doce:** Obrigatório (String).
+*   **quantidade:** Obrigatório (Número inteiro positivo).
+*   **valor:** Obrigatório (Número positivo).
+
+Caso algum dado não cumpra os requisitos, a API retornará um erro `400 Bad Request`.
