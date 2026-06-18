@@ -1,8 +1,8 @@
 const express = require('express');
-const app = express();
 const { z } = require('zod');
+const app = express();
 const PORT = 3000;
-
+app.use(express.json());
 //validação para encomenda usando zod
 const encomendaschema = z.object({
     cliente: z.string().min(3, { message: "O nome do cliente deve ter pelo menos 3 caracteres"}),
@@ -27,7 +27,6 @@ function gerarcodigorastreio() {
     return `${letra1}${letra2}${numeros}BR`;
 }
 
-app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Bem-vindo a API de controle de encomendas!');
 });
@@ -41,6 +40,16 @@ let encomendas = [
 //rota para listar encomendas
 app.get('/encomendas', (req, res) => {
     res.json(encomendas);
+})
+
+app.get('/encomendas/rastreio/:codigo', (req, res) => {
+    const codigobusca = req.params.codigo.toUpperCase();
+    const encomenda = encomendas.find(e => e.codigorastreio === codigobusca);
+
+    if (!encomenda) {
+        return res.status(404).json({ erro: `Encomenda com o codigo de rastreio ${codigobusca} não encontrada.`})
+    }
+    res.json(encomenda);
 })
 
 //criar uma nova encomenda
@@ -96,7 +105,6 @@ app.put('/encomendas/:id', (req, res) => {
     }
 
     encomenda.status = validacao.data.status;
-
     res.json({ mensagem: "Status atualizado com sucesso!", encomenda });
 });
 
@@ -119,6 +127,10 @@ app.delete('/encomendas/:id', (req, res) => {
 });
 
 //inicializa o servidor na porta 3000
-app.listen(PORT, () => {
-    console.log(`Servidor de encomendas rodando em http://localhost:${PORT}`);
-});
+ if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Servidor de encomendas rodando em http://localhost:${PORT}`);
+    });
+ }
+
+module.exports = app;
